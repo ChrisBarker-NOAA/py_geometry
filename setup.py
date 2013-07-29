@@ -16,7 +16,11 @@ ext_modules = cythonize([Extension("py_geometry.cy_point_in_polygon",
                                    sources=["py_geometry/cy_point_in_polygon.pyx",
                                             "py_geometry/c_point_in_polygon.c"],
                                    include_dirs=[numpy.get_include()]),
+                         Extension("py_geometry.line_crossings",
+                                   sources=["py_geometry/line_crossings.pyx",],
+                                   include_dirs=[numpy.get_include()]),
                         ])
+
 
 modules = ["py_geometry/BBox.py"
            "py_geometry/polygons.py",

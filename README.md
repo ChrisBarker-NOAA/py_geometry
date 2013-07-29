@@ -2,7 +2,9 @@
 
 Simple package for some basic computatinoal geometry functions.
 
-The most useful is a point_in_polygon check -- bulid with cyton wrapping a simple C function.
+A few useful functions:
+ * point_in_polygon check -- bulid with cython wrapping a simple C function.
+ * line-crossings -- sid eof line check and line segment intersection check.
 
 This code was developed by the federal government, and is in the public domain.
 
