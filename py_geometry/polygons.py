@@ -2,13 +2,18 @@
 polygon module, part of the geometry package
 
 Assorted stuff for working with polygons
+
+Core to this class are a Polygon object, which is a subclass on numpy
+ndarray, but can hold additional metadata, and a few extra methods.
+
+
 """
 
 import copy
 
 import numpy as np
 
-import BBox
+from . import bbox
 
 class Polygon(np.ndarray):
     """
@@ -68,9 +73,8 @@ class Polygon(np.ndarray):
         return "".join(msg)
 
     def _get_bounding_box(self):
-        return BBox.fromPoints(self)
+        return bbox.from_points(self)
     bounding_box = property(_get_bounding_box)
-
 
    
 class PolygonSet:
@@ -81,7 +85,7 @@ class PolygonSet:
      
     def __init__(self, data = None, dtype=np.float64):
         """
-        create a new PolygonSet object
+        Create a new PolygonSet object
         
         if no data is passed in, and empty set is created.
         
@@ -117,7 +121,7 @@ class PolygonSet:
         self._MetaDataList.append(metadata)
 
     def _get_bounding_box(self):
-        return BBox.fromPoints(self._PointsArray)
+        return bbox.from_points(self._PointsArray)
     bounding_box = property(_get_bounding_box)
 
     def _get_total_num_points(self):

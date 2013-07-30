@@ -1,0 +1,7 @@
+# requrements for py_geometry package
+
+numpy>=1.7.0   
+Cython>=0.17.1
+
+pytest>=2.3.4
+

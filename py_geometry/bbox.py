@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-A Bounding Box object and assorted utilities , subclassed from a numpy array
+A Bounding Box object and assorted utilities, subclassed from a numpy array
 
 """
 
@@ -22,11 +22,11 @@ class BBox(np.ndarray):
     
     Usually created by the factory functions:
     
-        asBBox
+        ``asBBox()``
         
         and 
         
-        fromPoints
+        ``from_points()``
     
     """
     def __new__(subtype, data):
@@ -43,22 +43,25 @@ class BBox(np.ndarray):
         
         and 
         
-        fromPoints
+        from_points
 
         """
         arr = np.array(data, np.float64)
-        arr.shape = (2,2)
+        arr.shape = (2, 2)
         if arr[0,0] > arr[1,0] or arr[0,1] > arr[1,1]:
             # note: zero sized BB OK.
             raise ValueError("BBox values not aligned: \n minimum values must be less that maximum values")
         return np.ndarray.__new__(BBox, shape=arr.shape, dtype=arr.dtype, buffer=arr)
 
-    def Overlaps(self, BB):
+    def overlaps(self, BB):
         """
-        Overlap(BB):
+        overlap(BB):
+
+        :param BB: another bounding box
+        :type BB: BBox object (or ndarray)
 
         Tests if the given Bounding Box overlaps with this one.
-        Returns True is the Bounding boxes overlap, False otherwise
+        Returns True if the Bounding boxes overlap, False otherwise
         If they are just touching, returns True
         """
 
@@ -70,7 +73,7 @@ class BBox(np.ndarray):
         else:
             return False
 
-    def Inside(self, BB):
+    def inside(self, BB):
         """
         Inside(BB):
 
@@ -87,9 +90,11 @@ class BBox(np.ndarray):
         else:
             return False
     
-    def PointInside(self, Point):
+    def point_inside(self, point):
         """
-        Inside(BB):
+        point_inside(BB):
+
+        :param point: any length-2 sequence (tuple, list, array) or two numbers
 
         Tests if the given Point is entirely inside this one.
 
@@ -98,22 +103,21 @@ class BBox(np.ndarray):
 
         Returns False otherwise
         
-        Point is any length-2 sequence (tuple, list, array) or two numbers
         """
-        if Point[0] >= self[0,0] and \
-               Point[0] <= self[1,0] and \
-               Point[1] <= self[1,1] and \
-               Point[1] >= self[0,1]:
+        if point[0] >= self[0,0] and \
+               point[0] <= self[1,0] and \
+               point[1] <= self[1,1] and \
+               point[1] >= self[0,1]:
             return True
         else:
             return False
     
-    def Merge(self, BB):
+    def merge(self, BB):
         """
         Joins this bounding box with the one passed in, maybe making this one bigger
 
         """ 
-        if self.IsNull():
+        if self.is_null():
             self[:] = BB
         elif np.isnan(BB).all(): ## BB may be a regular array, so I can't use IsNull
             pass
@@ -125,11 +129,13 @@ class BBox(np.ndarray):
         
         return None
     
-    def AsPoly(self):
+    def as_poly(self):
         """
         Returns the four corners of the bounding box as polygon:
         
         An 4X2 array of (x,y) coordinates of the corners
+
+        note: the first/last point is not duplicated
         
         """
         return np.array( ( (self[0,0], self[0,1]),
@@ -138,7 +144,7 @@ class BBox(np.ndarray):
                            (self[1,0], self[0,1]),
                            ), dtype= np.float64) 
     
-    def IsNull(self):
+    def is_null(self):
         return np.isnan(self).all()
 
     ## fixme: it would be nice to add setter, too.
@@ -185,7 +191,7 @@ class BBox(np.ndarray):
         A == B if and only if all the entries are the same
 
         """
-        if self.IsNull() and np.isnan(BB).all(): ## BB may be a regular array, so I can't use IsNull
+        if self.is_null() and np.isnan(BB).all(): ## BB may be a regular array, so I can't use IsNull
             return True
         else:
             return self.Array__eq__(BB).all()
@@ -211,46 +217,42 @@ def asBBox(data):
     arr = np.asarray(data, np.float64)
     return np.ndarray.__new__(BBox, shape=arr.shape, dtype=arr.dtype, buffer=arr)
 
-def fromPoints(Points):
+def from_points(points):
     """
-    fromPoints (Points).
+    from_points (points).
 
-    reruns the bounding box of the set of points in Points. Points can
+    :param points: set of points -- Nx2 numpy array, or something that can be turned into one.
+
+    retruns the bounding box of the set of points in points. points can
     be any python object that can be turned into a numpy NX2 array of float64s.
 
     If a single point is passed in, a zero-size Bounding Box is returned.
-    
     """
-    Points = np.asarray(Points, np.float64).reshape(-1,2)
+    points = np.asarray(points, np.float64).reshape(-1,2)
 
-    arr = np.vstack( (Points.min(0), Points.max(0)) )
+    arr = np.vstack( (points.min(0), points.max(0)) )
+    
     return np.ndarray.__new__(BBox, shape=arr.shape, dtype=arr.dtype, buffer=arr)
 
-def fromBBArray(BBarray):
+def from_BB_array(BBarray):
    """
    Builds a BBox object from an array of Bounding Boxes. 
    The resulting Bounding Box encompases all the included BBs.
    
-   The BBarray is in the shape: (Nx2x2) where BBarray[n] is a 2x2 array that represents a BBox
+   The BB_array is in the shape: (Nx2x2) where BB_array[n] is a 2x2 array
+   that represents a BBox
    """
-   
-   #upperleft = np.minimum.reduce(BBarray[:,0])
-   #lowerright = np.maximum.reduce(BBarray[:,1])
-
-#   BBarray = np.asarray(BBarray, np.float64).reshape(-1,2)
-#   arr = np.vstack( (BBarray.min(0), BBarray.max(0)) )
    BBarray = np.asarray(BBarray, np.float64).reshape(-1,2,2)
    arr = np.vstack( (BBarray[:,0,:].min(0), BBarray[:,1,:].max(0)) )
    return asBBox(arr)
-   #return asBBox( (upperleft, lowerright) ) * 2
    
-def NullBBox():
+def null_BBox():
     """
-    Returns a BBox object with all NaN entries.
+    :returns BBox: a BBox object with all NaN entries.
     
-    This represents a Null BB box;
+    This represents a Null BB box:
     
-    BB merged with it will return BB.
+    a BB merged with it will return BB.
     
     Nothing is inside it.
 
@@ -259,7 +261,7 @@ def NullBBox():
     arr = np.array(((np.nan, np.nan),(np.nan, np.nan)), np.float64)
     return np.ndarray.__new__(BBox, shape=arr.shape, dtype=arr.dtype, buffer=arr)
 
-def InfBBox():
+def inf_BBox():
     """
     Returns a BBox object with all -inf and inf entries
 

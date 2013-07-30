@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 
-
 """
 Test code for the BBox Object
 
 """
 
-
 import unittest
 
 import numpy as np
 
-from gnome.utilities.geometry.BBox import *
+from py_geometry.bbox import *
 
 class testCreator(unittest.TestCase):
     def testCreates(self):
@@ -96,87 +94,87 @@ class testIntersect(unittest.TestCase):
     def testSame(self):
         B = BBox(((-23.5, 456),(56, 532.0)))
         C = BBox(((-23.5, 456),(56, 532.0)))
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
     
     def testUpperLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (0, 12),(10, 32.0) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
     
     def testUpperRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (12, 12),(25, 32.0) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
     
     def testLowerRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (12, 5),(25, 15) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
     
     def testLowerLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (-10, 5),(8.5, 15) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
         
     def testBelow(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (-10, 5),(8.5, 9.2) ) )
-        self.failIf(B.Overlaps(C) )
+        self.failIf(B.overlaps(C) )
         
     def testAbove(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (-10, 25.001),(8.5, 32) ) )
-        self.failIf(B.Overlaps(C) )
+        self.failIf(B.overlaps(C) )
         
     def testLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (4, 8),(4.95, 32) ) )
-        self.failIf(B.Overlaps(C) )
+        self.failIf(B.overlaps(C) )
         
     def testRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (17.1, 8),(17.95, 32) ) )
-        self.failIf(B.Overlaps(C) )
+        self.failIf(B.overlaps(C) )
 
     def testInside(self):
         B = BBox( ( (-15, -25),(-5, -10) ) )
         C = BBox( ( (-12, -22), (-6, -8) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
         
     def testOutside(self):
         B = BBox( ( (-15, -25),(-5, -10) ) )
         C = BBox( ( (-17, -26), (3, 0) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
     
     def testTouch(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (15, 8),(17.95, 32) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
         
     def testCorner(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (15, 25),(17.95, 32) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
         
     def testZeroSize(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (15, 25),(15, 25) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
         
     def testZeroSize2(self):
         B = BBox( ( (5, 10),(5, 10) ) )
         C = BBox( ( (15, 25),(15, 25) ) )
-        self.failIf(B.Overlaps(C) )
+        self.failIf(B.overlaps(C) )
         
     def testZeroSize3(self):
         B = BBox( ( (5, 10),(5, 10) ) )
         C = BBox( ( (0, 8),(10, 12) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
 
     def testZeroSize4(self):
         B = BBox( ( (5, 1),(10, 25) ) )
         C = BBox( ( (8, 8),(8, 8) ) )
-        self.failUnless(B.Overlaps(C) )
+        self.failUnless(B.overlaps(C) )
 
 
 
@@ -210,146 +208,146 @@ class testEquality(unittest.TestCase):
         C = np.array( ( (1.01, 2.0), (5.0, 10.0) ) )
         self.failIf(C == B)
         
-class testInside(unittest.TestCase):
+class testinside(unittest.TestCase):
     def testSame(self):
         B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
         C = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
-        self.failUnless(B.Inside(C))
+        self.failUnless(B.inside(C))
 
     def testPoint(self):
         B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
         C = BBox( ( (3.0, 4.0), (3.0, 4.0) ) )
-        self.failUnless(B.Inside(C))
+        self.failUnless(B.inside(C))
 
     def testPointOutside(self):
         B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
         C = BBox( ( (-3.0, 4.0), (0.10, 4.0) ) )
-        self.failIf(B.Inside(C))
+        self.failIf(B.inside(C))
 
     def testUpperLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (0, 12),(10, 32.0) ) )
-        self.failIf(B.Inside(C) )
+        self.failIf(B.inside(C) )
     
     def testUpperRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (12, 12),(25, 32.0) ) )
-        self.failIf(B.Inside(C) )
+        self.failIf(B.inside(C) )
     
     def testLowerRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (12, 5),(25, 15) ) )
-        self.failIf(B.Inside(C) )
+        self.failIf(B.inside(C) )
     
     def testLowerLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (-10, 5),(8.5, 15) ) )
-        self.failIf(B.Inside(C) )
+        self.failIf(B.inside(C) )
         
     def testBelow(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (-10, 5),(8.5, 9.2) ) )
-        self.failIf(B.Inside(C) )
+        self.failIf(B.inside(C) )
         
     def testAbove(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (-10, 25.001),(8.5, 32) ) )
-        self.failIf(B.Inside(C) )
+        self.failIf(B.inside(C) )
         
     def testLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (4, 8),(4.95, 32) ) )
-        self.failIf(B.Inside(C) )
+        self.failIf(B.inside(C) )
         
     def testRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         C = BBox( ( (17.1, 8),(17.95, 32) ) )
-        self.failIf(B.Inside(C) )
+        self.failIf(B.inside(C) )
 
-class testPointInside(unittest.TestCase):
+class testpoint_inside(unittest.TestCase):
     def testPointIn(self):
         B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
         P = (3.0, 4.0)
-        self.failUnless(B.PointInside(P))
+        self.failUnless(B.point_inside(P))
 
     def testUpperLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         P = (4, 30)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
     
     def testUpperRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         P = (16, 30)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
     
     def testLowerRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         P = (16, 4)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
     
     def testLowerLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         P = (-10, 5)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
         
     def testBelow(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         P = (10, 5)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
         
     def testAbove(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         P  = ( 10, 25.001)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
         
     def testLeft(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         P = (4, 12)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
         
     def testRight(self):
         B = BBox( ( (5, 10),(15, 25) ) )
         P = (17.1, 12.3)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
 
     def testPointOnTopLine(self):
         B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
         P = (3.0, 10.0)
-        self.failUnless(B.PointInside(P))
+        self.failUnless(B.point_inside(P))
 
     def testPointLeftTopLine(self):
         B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
         P = (-3.0, 10.0)
-        self.failIf(B.PointInside(P))
+        self.failIf(B.point_inside(P))
 
     def testPointOnBottomLine(self):
         B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
         P = (3.0, 5.0)
-        self.failUnless(B.PointInside(P))
+        self.failUnless(B.point_inside(P))
 
     def testPointOnLeft(self):
         B = BBox( ( (-10.0, -10.0), (-1.0, -1.0) ) )
         P = (-10, -5.0)
-        self.failUnless(B.PointInside(P))
+        self.failUnless(B.point_inside(P))
 
     def testPointOnRight(self):
         B = BBox( ( (-10.0, -10.0), (-1.0, -1.0) ) )
         P = (-1, -5.0)
-        self.failUnless(B.PointInside(P))
+        self.failUnless(B.point_inside(P))
 
     def testPointOnBottomRight(self):
         B = BBox( ( (-10.0, -10.0), (-1.0, -1.0) ) )
         P = (-1, -10.0)
-        self.failUnless(B.PointInside(P))
+        self.failUnless(B.point_inside(P))
 
-class testFromPoints(unittest.TestCase):
+class test_from_points(unittest.TestCase):
 
     def testCreate(self):
         Pts = np.array( ((5,2),
                 (3,4),
                 (1,6),
                 ), np.float_ )
-        B = fromPoints(Pts)
+        B = from_points(Pts)
         #B = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
         self.failUnless(B[0,0] == 1.0 and
                         B[0,1] == 2.0 and
@@ -361,7 +359,7 @@ class testFromPoints(unittest.TestCase):
                 (3,4),
                 (1,6),
                 ) )
-        B = fromPoints(Pts)
+        B = from_points(Pts)
         self.failUnless(B[0,0] == 1.0 and
                         B[0,1] == 2.0 and
                         B[1,0] == 5.0 and
@@ -370,7 +368,7 @@ class testFromPoints(unittest.TestCase):
 
     def testSinglePoint(self):
         Pts = np.array( (5,2), np.float_ )
-        B = fromPoints(Pts)
+        B = from_points(Pts)
         self.failUnless(B[0,0] == 5.0 and
                         B[0,1] == 2.0 and
                         B[1,0] == 5.0 and
@@ -384,36 +382,36 @@ class testFromPoints(unittest.TestCase):
                 (65, -23),
                 (-0.0001, 23.432),
                 ]
-        B = fromPoints(Pts)       
+        B = from_points(Pts)       
         self.failUnless(B[0,0] == -4.32 and
                         B[0,1] == -23.0 and
                         B[1,0] == 65.0 and
                         B[1,1] == 43.2
                         )
-class testMerge(unittest.TestCase):
+class test_merge(unittest.TestCase):
     A = BBox( ((-23.5, 456), (56, 532.0)) )
     B = BBox( ((-20.3, 460), (54, 465  )) )# B should be completely inside A
-    C = BBox( ((-23.5, 456), (58, 540.0)) )# up and to the right or A
+    C = BBox( ((-23.5, 456), (58, 540.0)) )# up and to the right of A
     D = BBox( ((-26.5, 12), (56, 532.0)) )
 
-    def testInside(self):
+    def testinside(self):
         C = self.A.copy()
-        C.Merge(self.B)
+        C.merge(self.B)
         self.failUnless(C == self.A)
 
     def testFullOutside(self):
         C = self.B.copy()
-        C.Merge(self.A)
+        C.merge(self.A)
         self.failUnless(C == self.A)
 
     def testUpRight(self):
         A = self.A.copy()
-        A.Merge(self.C)
+        A.merge(self.C)
         self.failUnless(A[0] == self.A[0] and A[1] == self.C[1])
 
     def testDownLeft(self):
         A = self.A.copy()
-        A.Merge(self.D)
+        A.merge(self.D)
         self.failUnless(A[0] == self.D[0] and A[1] == self.A[1])
 
 class testWidthHeight(unittest.TestCase):
@@ -458,19 +456,19 @@ class testBBarray(unittest.TestCase):
     BB = asBBox( ((-26.5,  12.), ( 58. , 540.)) )
 
     def testJoin(self):
-        BB = fromBBArray(self.BBarray)
+        BB = from_BB_array(self.BBarray)
         self.failUnless(BB == self.BB, "Wrong BB was created. It was:\n%s \nit should have been:\n%s"%(BB, self.BB))
 
-class testNullBBox(unittest.TestCase):
-    B1 = NullBBox()
-    B2 = NullBBox()
+class testnull_BBox(unittest.TestCase):
+    B1 = null_BBox()
+    B2 = null_BBox()
     B3 = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
 
     def testValues(self):
         self.failUnless( np.alltrue(np.isnan(self.B1)) )
     
-    def testIsNull(self):
-        self.failUnless( self.B1.IsNull )
+    def test_is_null(self):
+        self.failUnless( self.B1.is_null )
 
     def testEquals(self):
         self.failUnless( (self.B1 == self.B2) == True )
@@ -485,28 +483,28 @@ class testNullBBox(unittest.TestCase):
         
     def testMerge(self):
         C = self.B1.copy()
-        C.Merge(self.B3)
+        C.merge(self.B3)
         self.failUnless( C == self.B3,
                          "merge failed, got: %s"%C )
         
-    def testOverlaps(self):
-        self.failUnless( self.B1.Overlaps(self.B3) == False)
+    def testoverlaps(self):
+        self.failUnless( self.B1.overlaps(self.B3) == False)
 
-    def testOverlaps2(self):
-        self.failUnless( self.B3.Overlaps(self.B1) == False)
+    def testoverlaps2(self):
+        self.failUnless( self.B3.overlaps(self.B1) == False)
 
 
-class testInfBBox(unittest.TestCase):
-    B1 = InfBBox()
-    B2 = InfBBox()
+class testinf_BBox(unittest.TestCase):
+    B1 = inf_BBox()
+    B2 = inf_BBox()
     B3 = BBox( ( (1.0, 2.0), (5.0, 10.0) ) )
-    NB = NullBBox()
+    NB = null_BBox()
 
     def testValues(self):
         self.failUnless( np.alltrue(np.isinf(self.B1)) )
     
-#    def testIsNull(self):
-#        self.failUnless( self.B1.IsNull )
+#    def testis_null(self):
+#        self.failUnless( self.B1.is_null )
 
     def testEquals(self):
         self.failUnless( (self.B1 == self.B2) == True )
@@ -522,30 +520,30 @@ class testInfBBox(unittest.TestCase):
         
     def testMerge(self):
         C = self.B1.copy()
-        C.Merge(self.B3)
+        C.merge(self.B3)
         self.failUnless( C == self.B2,
                          "merge failed, got: %s"%C )
 
     def testMerge2(self):
         C = self.B3.copy()
-        C.Merge(self.B1)
+        C.merge(self.B1)
         self.failUnless( C == self.B1,
                          "merge failed, got: %s"%C )
 
-    def testOverlaps(self):
-        self.failUnless( self.B1.Overlaps(self.B2) == True)
+    def testoverlaps(self):
+        self.failUnless( self.B1.overlaps(self.B2) == True)
 
-    def testOverlaps2(self):
-        self.failUnless( self.B3.Overlaps(self.B1) == True)
+    def testoverlaps2(self):
+        self.failUnless( self.B3.overlaps(self.B1) == True)
         
-    def testOverlaps3(self):
-        self.failUnless( self.B1.Overlaps(self.B3) == True)
+    def testoverlaps3(self):
+        self.failUnless( self.B1.overlaps(self.B3) == True)
 
-    def testOverlaps4(self):
-        self.failUnless( self.B1.Overlaps(self.NB) == True)
+    def testoverlaps4(self):
+        self.failUnless( self.B1.overlaps(self.NB) == True)
 
-    def testOverlaps5(self):
-        self.failUnless( self.NB.Overlaps(self.B1) == True)
+    def testoverlaps5(self):
+        self.failUnless( self.NB.overlaps(self.B1) == True)
     
 
 class testSides(unittest.TestCase):
@@ -560,7 +558,7 @@ class testSides(unittest.TestCase):
     def testTop(self):
         self.failUnless( self.B.Top == 10.0  )    
 
-class testAsPoly(unittest.TestCase):
+class test_as_poly(unittest.TestCase):
     B = BBox ( ( (5,0), (10,20) ) )
     corners = np.array( [( 5.,  0.),
                          ( 5., 20.),
@@ -568,12 +566,9 @@ class testAsPoly(unittest.TestCase):
                          (10.,  0.)], dtype=np.float64 )
     
     def testCorners(self):
-        print self.B.AsPoly()
-        self.failUnless ( np.array_equal(self.B.AsPoly(), self.corners ) )
+        print self.B.as_poly()
+        self.failUnless ( np.array_equal(self.B.as_poly(), self.corners ) )
         
-                      
-
-
 
 if __name__ == "__main__":
     unittest.main()

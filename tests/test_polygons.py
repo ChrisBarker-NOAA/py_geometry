@@ -7,7 +7,7 @@ designed to be run with nose
 ## test in_place
 import sys
 
-from gnome.utilities.geometry.polygons import Polygon, PolygonSet
+from py_geometry.polygons import Polygon, PolygonSet
 
 import numpy as np
 
