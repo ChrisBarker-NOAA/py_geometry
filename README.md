@@ -1,3 +1,7 @@
+# **NOTE:** This package has been superceed by: 
+
+https://github.com/NOAA-ORR-ERD/geometry_utils
+
 # py_geometry
 
 Simple package for some basic computatinoal geometry functions.
